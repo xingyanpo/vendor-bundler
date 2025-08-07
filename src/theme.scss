@@ -1,0 +1,9 @@
+.custom {
+  --custom-color: #3498db;
+  --custom-font-size: 16px;
+  --custom-padding: 10px;
+}
+.a{
+  background-color: var(--custom-color);
+  .test {height: 100px;}
+}

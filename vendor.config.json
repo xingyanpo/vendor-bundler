@@ -1,0 +1,28 @@
+{
+  "globalVar": "x",
+  "modules": {
+    "theme": {
+      "script": "theme.js",
+      "style": "theme.scss",
+      "custom": true,
+      "nopack": false
+    },
+    "axios": {
+      "script": "axios"
+    },
+    "lodash": {
+      "script": "lodash"
+    },
+    "swiper": {
+      "script": "swiper",
+      "style": "swiper/css"
+    },
+    "dayjs": {
+      "script": "dayjs"
+    },
+    "vue": {
+      "script": "vue",
+      "alias": true
+    }
+  }
+}

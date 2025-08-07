@@ -1,0 +1,15 @@
+window.x = window.x || {};
+import theme from '../src/theme.js';
+window.x['theme'] = theme;
+import '../src/theme.scss';
+import axios from 'axios';
+window.x['axios'] = axios;
+import lodash from 'lodash';
+window.x['lodash'] = lodash;
+import swiper from 'swiper';
+window.x['swiper'] = swiper;
+import 'swiper/css';
+import dayjs from 'dayjs';
+window.x['dayjs'] = dayjs;
+import * as vue from 'vue';
+window.x['vue'] = vue;

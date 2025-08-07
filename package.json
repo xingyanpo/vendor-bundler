@@ -1,0 +1,27 @@
+{
+  "name": "vendor-bundler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cross-env BUILD=false vite",
+    "build": "cross-env BUILD=true vite build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.13.1",
+  "dependencies": {
+    "axios": "^1.11.0",
+    "dayjs": "^1.11.13",
+    "lodash": "^4.17.21",
+    "swiper": "^11.2.10",
+    "vue": "^3.5.18"
+  },
+  "devDependencies": {
+    "cross-env": "^10.0.0",
+    "sass-embedded": "^1.90.0",
+    "terser": "^5.43.1",
+    "vite": "^7.0.6"
+  }
+}
