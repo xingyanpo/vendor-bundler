@@ -12,6 +12,7 @@
   "license": "ISC",
   "packageManager": "pnpm@10.13.1",
   "dependencies": {
+    "alpinejs": "^3.14.9",
     "axios": "^1.11.0",
     "dayjs": "^1.11.13",
     "lodash": "^4.17.21",

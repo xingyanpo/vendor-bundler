@@ -1,29 +1,37 @@
 const fs = require('fs');
 const path = require('path');
 
-function generateEntrypoints(isBuild = true) {
-  const configPath = path.resolve(__dirname, 'vendor.config.json');
+const sortModules = (modules) => {
+  const entries = Object.entries(modules);
+  let normal = [];
+  let custom = [];
+  for (const [key, value] of entries) { value.custom === true ? custom.push([key, value]) : normal.push([key, value]); }
+  if (custom.length > 0) normal = normal.concat(custom);
+  return Object.fromEntries(normal);
+}
+
+const generateEntrypoints = ({isBuild = true, customPath = 'src', outputPath = '.vite', configPath = 'vendor.config.json'}) => {
+  if (!configPath.endsWith('.json')) throw new Error('configPath must be a json file');
+  configPath = path.resolve(__dirname, configPath);
+  outputPath = path.resolve(__dirname, outputPath);
   const raw = fs.readFileSync(configPath, 'utf-8');
-  const { globalVar = 'x', modules } = JSON.parse(raw);
-  const jsLines = [`window.${globalVar} = window.${globalVar} || {};`];
+  const { globalVar, modules } = JSON.parse(raw);
+  const varName = globalVar && globalVar.trim() ? globalVar : '';
+  const jsLines = [varName ? `window.${varName} = window.${varName} || {};` : ''].filter(Boolean);
   const cssLines = [];
-  for (const [pkg, { script, style, alias, custom, nopack }] of Object.entries(modules)) {
+  for (const [pkg, { script, style, alias, custom, nopack }] of Object.entries(sortModules(modules))) {
     if (nopack) continue;
-    const scriptPath = custom ? `../src/${script}` : script;
-    if (alias) {
-      jsLines.push(`import * as ${pkg} from '${scriptPath}';`);
-    } else {
-      jsLines.push(`import ${pkg} from '${scriptPath}';`);
-    }
-    jsLines.push(`window.${globalVar}['${pkg}'] = ${pkg};`);
-    const stylePath = custom ? `../src/${style}` : style;
+    const scriptPath = custom ? path.relative(outputPath, path.resolve(customPath, script)).replace(/\\\\/g, '/').replace(/\\/g, '/') : script;
+    jsLines.push(`import ${alias ? `* as ${pkg}` : pkg} from '${scriptPath}';`);
+    jsLines.push(!!varName ? `window.${varName}['${pkg}'] = ${pkg};` : `window['${pkg}'] = ${pkg};`)
+    const stylePath = custom ? path.relative(outputPath, path.resolve(customPath, style)).replace(/\\\\/g, '/').replace(/\\/g, '/') : style;
     if (style && isBuild) { jsLines.push(`import '${stylePath}';`) };
     if (style && !isBuild) { cssLines.push(`@import '${stylePath}';`) };
   }
-  if (!isBuild) { jsLines.push(`const G = window.${globalVar}; document.getElementById('output').innerText = JSON.stringify({ ${Object.keys(modules).map(k => `'${k}': typeof G['${k}'] !== 'undefined'`).join(',\n  ')} }, null, 2); `.trim()); }
-  fs.mkdirSync('./.vite', { recursive: true });
-  fs.writeFileSync('./.vite/main.js', jsLines.join('\n'));
-  fs.writeFileSync('./.vite/main.css', cssLines.join('\n'));
+  !isBuild && jsLines.push(`const G = ${varName ? `window.${varName}` : 'window'}; document.getElementById('output').innerText = JSON.stringify({ ${Object.keys(modules).map(k => `'${k}': typeof G['${k}'] !== 'undefined'`).join(',\n  ')} }, null, 2); `.trim());
+  fs.mkdirSync(outputPath, { recursive: true });
+  fs.writeFileSync(`${outputPath}/main.js`, jsLines.join('\n'));
+  fs.writeFileSync(`${outputPath}/main.css`, cssLines.join('\n'));
   console.log(`${!isBuild ? '[开发模式]' : '[生产模式]'}`);
 }
 

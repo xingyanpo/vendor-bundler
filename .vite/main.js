@@ -1,7 +1,4 @@
 window.x = window.x || {};
-import theme from '../src/theme.js';
-window.x['theme'] = theme;
-import '../src/theme.scss';
 import axios from 'axios';
 window.x['axios'] = axios;
 import lodash from 'lodash';
@@ -13,3 +10,8 @@ import dayjs from 'dayjs';
 window.x['dayjs'] = dayjs;
 import * as vue from 'vue';
 window.x['vue'] = vue;
+import Alpine from 'alpinejs';
+window.x['Alpine'] = Alpine;
+import theme from '../src/theme.js';
+window.x['theme'] = theme;
+import '../src/theme.scss';

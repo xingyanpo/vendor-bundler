@@ -2,12 +2,12 @@ import { defineConfig } from 'vite';
 import path from 'path';
 import generateEntrypoints from './generate.js';
 const isBuild = process.env.BUILD === 'true';
-generateEntrypoints(isBuild);
+generateEntrypoints({ isBuild });
 
 const buildConfig = () => ({
   rollupOptions: { input: path.resolve(__dirname, '.vite/main.js'), output: { format: 'iife', entryFileNames: 'vendor.js', assetFileNames: 'vendor.css', name: 'VendorBundle' } },
   cssCodeSplit: false,
-  outDir: 'dist',
+  outDir: 'vendor',
   minify: 'terser',
   emptyOutDir: true
 });
